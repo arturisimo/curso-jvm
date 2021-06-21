@@ -7,13 +7,13 @@ Un servidor de aplicaciones se necesita saber hasta donde da de sí: (RAM , CPU 
 De qué depende el rendimiento de la aplicación (tiempo de respuesta (está entorno 500ms)) 
 * Comunicaciones entre servidor Latencia 20ms
 * Cantidad de accesos a sistemas externo que se realizan:
-   - Oracle Database JDBC
-   - Solr HTTP
- Para hacer menos accesos existen varias estrategias:
-   - Cache
-   - Empaquetar peticiones  
+   * Oracle Database JDBC
+   * Solr HTTP
  
-
+ Para hacer menos accesos existen varias estrategias:
+   * Cache
+   * Empaquetar peticiones  
+ 
 La capacidad de carga lo define los recursos CPU / RAM
 
 El rendimiento esta definido por las comunicaciones, por la configuración de los pools de conexiones a BBD y de threads
@@ -25,20 +25,19 @@ La consulta a la BBDD lo realiza el driver, que lo gestiona el servidor de aplic
 El servidor de aplicaciones aporta un Pool de conexiones - conjunto de conexiones dinamico preestablecidad con la BBDD. Si no hay suficientes hay una cola de conexiones que habrá que  gestionar para su optimización
 
 Qué implica abrir una conexion a BBDD? 
- * En el servidor de aplicaciones arrancar un nuevo proceso a nivel de SO > 1seg - 2seg
+En el servidor de aplicaciones arrancar un nuevo proceso a nivel de SO > 1seg - 2seg
 
 **Pool threads**
 
 si no hay suficientes threads las peticiones se encolan. El número de de ejecutores depende de los recursos. Los recuros (CPU/Ram/Capacidad I/O Disco) límita el número de threads que se pueden crear
 
 Un servlet es ejecutado por un thread
-Cada peticiones es atendida en un servidor de aplicaciones por un thread. El thread se gestiona en el pool de ejecturores
+Cada peticiones es atendida en el servidor de aplicaciones por un thread. El thread se gestiona en el pool de ejecutores
 
 Configuración 
-- Pool de conexiones a BBDD (min,max, incrementales)
-- Pool de thread (ejecutores)
 
-
+* Pool de conexiones a BBDD (min,max, incrementales)
+* Pool de thread (ejecutores)
 
 ## MEMORIA JVM
 
