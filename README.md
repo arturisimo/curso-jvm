@@ -48,14 +48,14 @@ Las variables permiten almacenar y recuperar información que se encuentra en la
 
   Integer numero = 7;
 
-> 7 reserva un espacio en memoria y escribe en la ram un 7 
-> int numero Genera una variable (numero) para referenciar a número enteros
-> = hace que la referencia apunte al valor
+* 7 reserva un espacio en memoria y escribe en la ram un 7 
+* int numero Genera una variable (numero) para referenciar a número enteros
+* = hace que la referencia apunte al valor
 
   numero = 18;
 
-> reserva un nuevo espacio de memoria  y escribe en la ram un 18
-> cambia la referencia de 7 a 18
+* reserva un nuevo espacio de memoria  y escribe en la ram un 18
+* cambia la referencia de 7 a 18
 
 En este caso hay dos dos zonas de memoria una para 7 y otra para 8. Posteriormente el GC eliminará la memoria ocupada por el 8. 
 
@@ -75,13 +75,13 @@ En java la gestión de memoria está menos optimizada, pero se ha simplficado el
 
 conjunto de hilos que mira que objetos hay en la RAM que no está referenciados.
 
-> 1ª etapa: los objetos no referenciados se marcan para su borrado
-> 2ª etapa: se eliminan los objetos marcados 
+* 1ª etapa: los objetos no referenciados se marcan para su borrado
+* 2ª etapa: se eliminan los objetos marcados 
 
 Por tanto, mientras mayor sea la RAM mas costoso será el proceso de GC. Para que sea menos costoso el proceso se divide la heap en varias zonas
 
-EDEN - Objetos nuevos - 25%
-OLD - Objetos viejos - 75%
+* EDEN - Objetos nuevos - 25%
+* OLD - Objetos viejos - 75%
 
 Cuando sea necesario se ejecutará el GC ( Aunque se puede forzar System.gc() pero es considerado un mala practica)
 
