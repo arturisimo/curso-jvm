@@ -39,6 +39,8 @@ Configuración
 * Pool de conexiones a BBDD (min,max, incrementales)
 * Pool de thread (ejecutores)
 
+https://www.datadoghq.com/blog/tomcat-architecture-and-performance/#working-with-tomcat-metrics
+
 ## MEMORIA JVM
 
 Java gestiona la memoria RAM en la JVM
