@@ -100,4 +100,24 @@ Parametrizar cantidad de memoria del HEAP:
 
 La recomendación es que estos valores sean iguales
 
+**visualvm**
+
+permite monitorizar VM locales y remotos. Instalar plugin VisualGC
+
+paramétros de la JVM
+
+* Logs GC -Xloggc:/tmp/gc.log
+
+* Dump de objetos del heap:-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/memory.hprof  
+
+Los archivos hprof se pueden importar al visualvm 
+
+**Repositorio de profesor**
+
+https://github.com/IvanciniGT/cursoOptimizacionJava
+
+
+
+
+
 
