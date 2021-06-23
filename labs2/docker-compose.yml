@@ -1,0 +1,37 @@
+version: "3.0"
+
+services: 
+    mariadb:
+        container_name: mimariadb
+        image: mariadb
+        ports:
+            - 3306:3306
+        environment: 
+            MARIADB_DATABASE: prueba
+            MARIADB_USER: usuario
+            MARIADB_PASSWORD: password
+            MARIADB_ROOT_PASSWORD: password
+    tomcat:
+        container_name: mitomcat
+        image: bitnami/tomcat:8.5
+        ports:
+            - 8081:8080
+        environment: 
+            TOMCAT_USERNAME: tomcat
+            TOMCAT_PASSWORD: password
+            TOMCAT_ALLOW_REMOTE_MANAGEMENT: "1"
+            JAVA_OPTS: >-
+                -Djava.awt.headless=true 
+                -XX:+UseG1GC 
+                -Dfile.encoding=UTF-8 
+                -Duser.home=$$TOMCAT_HOME
+                -Xmx500m 
+                -Xms500m 
+                -Dcom.sun.management.jmxremote.rmi.port=9090 
+                -Dcom.sun.management.jmxremote=true 
+                -Dcom.sun.management.jmxremote.port=9090 
+                -Dcom.sun.management.jmxremote.ssl=false 
+                -Dcom.sun.management.jmxremote.authenticate=false 
+                -Dcom.sun.management.jmxremote.local.only=false
+        volumes: 
+            - /home/java/curso/curso-jvm/install/tomcat-users.xml:/opt/bitnami/tomcat/conf/tomcat-user.xml

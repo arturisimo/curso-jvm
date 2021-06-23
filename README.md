@@ -100,6 +100,29 @@ Parametrizar cantidad de memoria del HEAP:
 
 La recomendación es que estos valores sean iguales
 
+**Compilacion**
+
+compilador javac genera el bytecode 
+dspues la JVM tiene un proceso de interpretado a codigo ejecutable directamente por el SO (código maquina)
+la interpretacion se hace en tiempo de ejecucion por el JIT Just in Time Compiler
+
+En la version 1.2 JVM se desarrollo HotSpot que tiene un cache de compilaciones 
+La JVM detecta los puntos calientes los cachea y los optimiza
+
+Con el HotSpot se consigue que el rendimiento sea igual que los lenguajes compilados
+
+Las aplicaciones java tiene un **warm time up** para la optimización
+
+**SERVIDORES EN HD**
+
+En un entorno de produccion, hay que tener la politica de HD de la empresa. Teniendo en cuenta que el servidor va a estar en cluster
+Si hay dos maquinas en un cluster si una se cae la otra debe poder asumir la carga:
+
+* Tomcat1 40% (CPU/RAM)
+* Tomcat2 40%
+
+Ejemplo real Sistema bancario:  4 servidores en weblogic. CPU no puede superar el 25%. App crítica pueden caer 3 servidores y el sistema seguiria funcionando.
+
 **visualvm**
 
 permite monitorizar VM locales y remotos. Instalar plugin VisualGC
@@ -111,6 +134,18 @@ paramétros de la JVM
 * Dump de objetos del heap:-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/memory.hprof  
 
 Los archivos hprof se pueden importar al visualvm 
+
+**jmeter**
+
+Herramientas para pruebas de stress. 
+
+Se establece la línea base teniendo en cuenta el rendimiento (tiempo de respuesta) de un usuario. 
+
+A partir de ahí podemos calibrar simulando peticiones (nº de hilos), controlando la CPU/RAM Si el tiempo de respuesta aumenta el servicio se está degradadando ya que las peticiones se encolan.
+
+Para rebajar la linea base se puede optimizar el código
+
+
 
 **Repositorio de profesor**
 

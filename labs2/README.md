@@ -25,6 +25,9 @@ sudo docker rm -f mitomcat
 # ssh contenedor
 sudo docker exec -it mitomcat bash
 
+# inspeccionar contenedor
+sudo docker inspect mitomcat
+
 # path tomcat
 /opt/bitnami/tomcat
 

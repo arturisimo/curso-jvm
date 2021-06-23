@@ -1,0 +1,215 @@
+
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: configuracion-mariadb  
+    labels:
+        app: mariadb   
+data:
+  MYSQL_DATABASE: midb
+---
+kind: Secret
+apiVersion: v1
+metadata:
+    name: secretos-mariadb  
+    labels:
+        app: mariab   
+data:
+  MYSQL_ROOT_PASSWORD: cGFzc3dvcmQx
+  MYSQL_USER: bWl1c3Vhcmlv
+  MYSQL_PASSWORD: cGFzc3dvcmQy
+---
+
+#MariaDB: Pod   >>>    Deployment  (1)
+#    Congigurarlo:
+#        ConfigMap <<< Nombre de la BBDD
+#        Secret    <<< Usuario/Password
+#kind: Pod
+#apiVersion: v1
+#metadata:
+#    name: pod-mariadb  
+#    labels: 
+#        app: mariadb
+#    namespace: pruebas NO LO VOY A HACER. Lo hago desde linea de comandos... Así es más flexible
+#spec:
+#    containers:
+#        -   name: contenedor-mariadb
+#            image: mariadb:latest 
+#            ports:
+#              - containerPort: 3306
+#            env:
+#              - name: MYSQL_ROOT_PASSWORD
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_ROOT_PASSWORD
+#              - name: MYSQL_DATABASE
+#                valueFrom:
+#                  configMapKeyRef:
+#                    name: configuracion-mariadb
+#                    key: MYSQL_DATABASE
+#              - name: MYSQL_USER
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_USER
+#              - name: MYSQL_PASSWORD
+#                valueFrom:
+#                  secretKeyRef:
+#                    name: secretos-mariadb
+#                    key: MYSQL_PASSWORD
+---
+#Volumenes: 
+#    MariaDB: Volumen Persistente
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: peticion-volumen-mariadb
+spec:
+  resources:
+    requests:
+      storage: 50Gi  
+  accessModes:
+    - ReadWriteOnce
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: deployment-mariadb  
+    labels: 
+        app: mariadb
+spec:
+    replicas: 1
+    selector: 
+        matchLabels:
+            app: mariadb
+    template:
+          metadata:
+              labels: 
+                  app: mariadb
+          spec: 
+            volumes:
+              - name: almacenamiento-mariadb
+                persistentVolumeClaim: 
+                  claimName: peticion-volumen-mariadb
+            containers:
+              -   name: contenedor-mariadb
+                  image: mariadb:latest 
+                  ports:
+                    - containerPort: 3306
+                  volumeMounts:
+                    - name: almacenamiento-mariadb
+                      mountPath: /var/lib/mysql
+                  env:
+                    - name: MYSQL_ROOT_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_ROOT_PASSWORD
+                    - name: MYSQL_DATABASE
+                      valueFrom:
+                        configMapKeyRef:
+                          name: configuracion-mariadb
+                          key: MYSQL_DATABASE
+                    - name: MYSQL_USER
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_USER
+                    - name: MYSQL_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: secretos-mariadb
+                          key: MYSQL_PASSWORD
+                  resources:
+                    requests:
+                      cpu: "1"         
+                      memory: 1Gi
+                         
+#Tomcat: Deployment    (2)
+# Volumen
+
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: empaquetador-app  
+    labels:
+        app: mariadb   
+data:
+  empaquetar.sh: |
+      #!/bin/bash
+      git clone https://github.com/IvanciniGT/webappTest
+      cd webappTest/
+      mvn package
+      cp /webappTest/target/webapp-test.war /resultado
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+    name: statefulset-tomcat  
+    labels: 
+        app: tomcat
+spec:
+    replicas: 2
+    selector: 
+        matchLabels:
+            app: tomcat
+    template:
+          metadata:
+              labels: 
+                  app: tomcat
+          spec: 
+            volumes:
+              - name: empaquetador
+                configMap:
+                  name: empaquetador-app
+              - name: aplicacion
+                empty-dir: {}
+            initContainers:
+              -   name: preparar-aplicacion
+                  image: maven:3.3-jdk-8 
+                  resources:
+                    requests:
+                      cpu: "0.5"         
+                      memory: 0.5Gi
+                  command: 
+                    - . /empaquetar/empaquetar.sh
+                  volumeMounts:
+                    - name: empaquetador
+                      mountPath: /empaquetar
+                    - name: aplicacion
+                      mountPath: /resultado
+            containers:
+              -   name: contenedor-tomcat
+                  image: bitnami/tomcat:latest 
+                  resources:
+                    requests:
+                      cpu: "0.5"         
+                      memory: 0.5Gi
+                  ports:
+                    - containerPort: 8080
+                  volumeMounts:
+                    - name: almacenamiento-tomcat
+                      mountPath: /carpeta
+                    - name: aplicacion
+                      mountPath: /app
+    volumeClaimTemplates:
+      - metadata:
+          name: almacenamiento-tomcat
+        spec:
+          resources:
+            requests:
+              storage: 50Gi  
+          storageClassName: discos-ssd-cloud
+          accessModes:
+            - ReadWriteOnce
+
+#    SECRET :
+#        fichero configuracion: Usuarios/Contraseñas
+#        tomcat-users.xml <<<- usuario/contraseña 
+

@@ -1,0 +1,9 @@
+<Context>
+
+
+  <Resource name="jdbc/miTestDB" auth="Container" type="javax.sql.DataSource"
+               maxTotal="50" maxIdle="3" maxWaitMillis="10000"
+               username="usuario" password="password" driverClassName="org.mariadb.jdbc.Driver"
+               url="jdbc:mariadb://10.0.2.15:3306/prueba"/>
+
+</Context>
