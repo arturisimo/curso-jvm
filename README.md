@@ -137,7 +137,7 @@ Los archivos hprof se pueden importar al visualvm
 
 **jmeter**
 
-Herramientas para pruebas de stress. 
+Herramientas para pruebas de rendimiento (performance). 
 
 Se establece la línea base teniendo en cuenta el rendimiento (tiempo de respuesta) de un usuario. 
 
