@@ -22,45 +22,45 @@ El objetivo es cambiar con estos parametros y el número de usuarios concurrente
 
 **container tomcat:8.5**
 
-# descarga imagen
-sudo docker pull bitnami/tomcat:8.5
+    # descarga imagen
+    sudo docker pull bitnami/tomcat:8.5
 
-# crear contenedor
-sudo docker container create --name mitomcat -e TOMCAT_USERNAME=tomcat -e TOMCAT_PASSWORD=password -e TOMCAT_ALLOW_REMOTE_MANAGEMENT=1 bitnami/tomcat:8.5
+    # crear contenedor
+    sudo docker container create --name mitomcat -e TOMCAT_USERNAME=tomcat -e TOMCAT_PASSWORD=password -e TOMCAT_ALLOW_REMOTE_MANAGEMENT=1 bitnami/tomcat:8.5
 
-# ejecuta contenedor
-sudo docker start mitomcat
+    # ejecuta contenedor
+    sudo docker start mitomcat
 
-# eliminar contenedor
-sudo docker rm -f mitomcat
+    # eliminar contenedor
+    sudo docker rm -f mitomcat
 
-# ssh contenedor
-sudo docker exec -it mitomcat bash
+    # ssh contenedor
+    sudo docker exec -it mitomcat bash
 
-# inspeccionar contenedor
-sudo docker inspect mitomcat
+    # inspeccionar contenedor
+    sudo docker inspect mitomcat
 
-# path tomcat
-/opt/bitnami/tomcat
+    # path tomcat
+    /opt/bitnami/tomcat
 
 # copia fichero tomcat-users.xml
 
-sudo docker cp mitomcat:/opt/bitnami/tomcat/conf/tomcat-users.xml .
+    sudo docker cp mitomcat:/opt/bitnami/tomcat/conf/tomcat-users.xml .
 
-sudo docker container create --name mitomcat -e TOMCAT_USERNAME=tomcat -e TOMCAT_PASSWORD=password -e TOMCAT_ALLOW_REMOTE_MANAGEMENT=1 -v /home/java/curso/curso-jvm/install/tomcat-users.xml:/opt/bitnami/tomcat/conf/tomcat-user.xml bitnami/tomcat:8.5
+    sudo docker container create --name mitomcat -e TOMCAT_USERNAME=tomcat -e TOMCAT_PASSWORD=password -e TOMCAT_ALLOW_REMOTE_MANAGEMENT=1 -v /home/java/curso/curso-jvm/install/tomcat-users.xml:/opt/bitnami/tomcat/conf/tomcat-user.xml bitnami/tomcat:8.5
 
 bitnami ya tiene el driver de MariaDB; si no estuviera se puede llevar al contenedor con el uso de volumenes -v
 
 # contenedor mariadb
 
-sudo docker container create --name mimariadb \
-    -p 3306:3306 -e MARIADB_DATABASE=prueba -e MARIADB_USER=usuario \
-    -e MARIADB_PASSWORD=password -e MARIADB_ROOT_PASSWORD=password mariadb
+    sudo docker container create --name mimariadb \
+        -p 3306:3306 -e MARIADB_DATABASE=prueba -e MARIADB_USER=usuario \
+        -e MARIADB_PASSWORD=password -e MARIADB_ROOT_PASSWORD=password mariadb
 
-sudo docker start mimariadb
+    sudo docker start mimariadb
 
-sudo docker exec -it mimariadb mysql -u root -p    
+    sudo docker exec -it mimariadb mysql -u root -p    
 
-MariaDB [(none)]> use prueba;
+    MariaDB [(none)]> use prueba;
 
-MariaDB [(none)]> show tables;
+    MariaDB [(none)]> show tables;
