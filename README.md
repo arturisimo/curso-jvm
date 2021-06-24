@@ -135,6 +135,19 @@ paramétros de la JVM
 
 Los archivos hprof se pueden importar al visualvm 
 
+Conexion Remota JMX
+
+service:jmx:rmi:///jndi/rmi://[HOST]:[JMXREMOTE_PORT]/jmxrmi
+
+Comandos proceso java
+
+ -Dcom.sun.management.jmxremote
+ -Dcom.sun.management.jmxremote.port=12345 
+ -Dcom.sun.management.jmxremote.authenticate=false 
+ -Dcom.sun.management.jmxremote.ssl=false 
+ -Dcom.sun.management.jmxremote.rmi.port=12346
+
+
 **jmeter**
 
 Herramientas para pruebas de rendimiento (performance). 
@@ -145,6 +158,7 @@ A partir de ahí podemos calibrar simulando peticiones (nº de hilos), controlan
 
 Para rebajar la linea base se puede optimizar el código
 
+![monitorizacion Tomcat](doc/monitorizacionJVM.png)
 
 
 **Repositorio de profesor**

@@ -40,10 +40,13 @@ El objetivo es cambiar con estos parametros y el número de usuarios concurrente
     # inspeccionar contenedor
     sudo docker inspect mitomcat
 
+    # IP contenedor
+    sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mitomcat
+
     # path tomcat
     /opt/bitnami/tomcat
 
-# copia fichero tomcat-users.xml
+**copia fichero tomcat-users.xml**
 
     sudo docker cp mitomcat:/opt/bitnami/tomcat/conf/tomcat-users.xml .
 
@@ -51,7 +54,7 @@ El objetivo es cambiar con estos parametros y el número de usuarios concurrente
 
 bitnami ya tiene el driver de MariaDB; si no estuviera se puede llevar al contenedor con el uso de volumenes -v
 
-# contenedor mariadb
+**contenedor mariadb**
 
     sudo docker container create --name mimariadb \
         -p 3306:3306 -e MARIADB_DATABASE=prueba -e MARIADB_USER=usuario \
