@@ -39,7 +39,38 @@ Configuración
 * Pool de conexiones a BBDD (min,max, incrementales)
 * Pool de thread (ejecutores)
 
-https://www.datadoghq.com/blog/tomcat-architecture-and-performance/#working-with-tomcat-metrics
++info: https://www.datadoghq.com/blog/tomcat-architecture-and-performance/#working-with-tomcat-metrics
+
+**Cache**
+
+Tomcat con uso de cache, se que persiste objetos en la zona del heap OLD durante un tiempo X. Si el sistema de cache está bien implementado deberia persistir solo si hay espacio.
+
+**Sessions**
+
+En el aplicaciones JEE tenemos Sessions (objeto que persiste informacion del usuario en una zona de la RAM) La sesión se indentifica mediante un JSESSIONID que esta en la cookie en el navegador.
+
+Una estrategia podría ser si no hay espacio en la RAM liberar espacio de la session.
+
+Es conveniente tener un sistema de persistencia externo para las sesiones (En Absys cacheo de sesiones en hazelCast)
+
+## SERVIDORES EN HD
+
+En un entorno de produccion, hay que tener la politica de HD de la empresa. Teniendo en cuenta que el servidor va a estar en cluster
+Si hay dos maquinas en un cluster si una se cae la otra debe poder asumir la carga:
+
+* Tomcat1 40% (CPU/RAM)
+* Tomcat2 40%
+
+Ejemplo real Sistema bancario:  4 servidores en weblogic. CPU no puede superar el 25%. App crítica pueden caer 3 servidores y el sistema seguiria funcionando.
+
+                              Tomcat 1 (App A)
+                            /
+    Client -> Balanceador - 
+                            \
+                              Tomcat 2 (App 2)
+
+El balanceador es capaz de ubicar la sesion  (a partir del JSESSIONID de la cookie del cliente) indepedientemente de en que servidor se encuentres 
+
 
 ## MEMORIA JVM
 
@@ -74,7 +105,7 @@ En java la gestión de memoria está menos optimizada, pero se ha simplficado el
 
 **GARBAJE COLLECTOR GC**
 
-conjunto de hilos que mira que objetos hay en la RAM que no está referenciados.
+Conjunto de hilos que mira que objetos hay en la RAM que no está referenciados.
 
 * 1ª etapa: los objetos no referenciados se marcan para su borrado
 * 2ª etapa: se eliminan los objetos marcados 
@@ -100,6 +131,11 @@ Parametrizar cantidad de memoria del HEAP:
 
 La recomendación es que estos valores sean iguales
 
+Existen varios algoritmos de GC. Por defecto se hace GC en serie
+Cambio GC en paralelo
+
+ -XX:+UseParallelGC
+
 **Compilacion**
 
 compilador javac genera el bytecode, optimiza el código
@@ -114,25 +150,6 @@ Con el HotSpot se consigue que el rendimiento sea igual que los lenguajes compil
 
 Las aplicaciones java tiene un **warm time up** para la optimización
 
-## SERVIDORES EN HD
-
-En un entorno de produccion, hay que tener la politica de HD de la empresa. Teniendo en cuenta que el servidor va a estar en cluster
-Si hay dos maquinas en un cluster si una se cae la otra debe poder asumir la carga:
-
-* Tomcat1 40% (CPU/RAM)
-* Tomcat2 40%
-
-Ejemplo real Sistema bancario:  4 servidores en weblogic. CPU no puede superar el 25%. App crítica pueden caer 3 servidores y el sistema seguiria funcionando.
-
-                          Tomcat 1 (App A)
-                        /
-Client -> Balanceador - 
-                        \
-                          Tomcat 2 (App 2)
-
-El balanceador es capaz de ubicar la sesion  (a partir del JSESSIONID de la cookie del cliente) indepedientemente de en que servidor se encuentres 
-
-Es conveniente tener un sistema de persistencia de sesiones (En Absys cacheo de sesiones en hazelCast)
 
 
 ## visualvm
@@ -168,7 +185,7 @@ Se establece la línea base teniendo en cuenta el rendimiento (tiempo de respues
 
 A partir de ahí podemos calibrar simulando peticiones (nº de hilos), controlando la CPU/RAM Si el tiempo de respuesta aumenta el servicio se está degradadando ya que las peticiones se encolan.
 
-Para rebajar la linea base se puede optimizar el código
+Se guardan los planes de pruebas en archivos .jmx 
 
 ![monitorizacion Tomcat](doc/monitorizacionJVM.png)
 

@@ -1,14 +1,6 @@
-# Aplicacion JEE en tomcat
+# Prueba de rendimiento JMeter
 
-Tomcat con uso de cache. que persiste objetos en la OLD durante un tiempo X. Si el sistema de cache está bien implementado deberia persistir solo si hay espacio.
-
-En el aplicaciones JEE tenemos Sessions (objeto que persiste informacion del usuario en una zona de la RAM) La sesión se indentifica mediante un JSESSIONID que esta en la cookie en el navegador.
-
-Una estrategia podría ser si no hay espacio en la RAM liberar espacio de la session.
-
-## Prueba de rendimiento JMeter
-
-La apliación **webapp-test** simula una aplicación web con acceso a MariaDB que vamos a desplegar en un contenedor. La aplicacion permite jugar con estos parámetros:
+La aplicación **webapp-test** simula una aplicación web con acceso a MariaDB que vamos a desplegar en un contenedor con Tomcat 8.5. La aplicacion permite jugar con estos parámetros:
 
 * TIEMPO_DEMORA_JAVA - Simular el tienpo de procesamiento de un proceso java
 * TIEMPO_DEMORA_DB - Simular la respuesta +/- pesada de una query
@@ -16,7 +8,7 @@ La apliación **webapp-test** simula una aplicación web con acceso a MariaDB qu
 * OBJETOS_PETICION
 
 El objetivo es cambiar con estos parametros y el número de usuarios concurrentes en JMeter para ver como responde la aplicación
-
+y ver si se baja el rendimiento detectar dónde se está dando el cuello de botella.
 
 ### Tomcat + MariaDB contenedores
 
