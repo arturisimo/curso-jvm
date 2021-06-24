@@ -150,7 +150,7 @@ Con el HotSpot se consigue que el rendimiento sea igual que los lenguajes compil
 
 Las aplicaciones java tiene un **warm time up** para la optimización
 
-
++ info: https://notasdeit.wordpress.com/2014/07/29/afinamiento-de-garbage-collector-de-una-jvm-de-java/
 
 ## visualvm
 
