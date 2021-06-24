@@ -1,6 +1,6 @@
 # Curso de optimizacion de la JVM
 
-Calibracion de un servidor:
+## Calibracion de un servidor
 
 Un servidor de aplicaciones se necesita saber hasta donde da de sí: (RAM , CPU ...). Cuantas peticiones es capaz de procesar
 
@@ -102,9 +102,10 @@ La recomendación es que estos valores sean iguales
 
 **Compilacion**
 
-compilador javac genera el bytecode 
+compilador javac genera el bytecode, optimiza el código
+
 dspues la JVM tiene un proceso de interpretado a codigo ejecutable directamente por el SO (código maquina)
-la interpretacion se hace en tiempo de ejecucion por el JIT Just in Time Compiler
+la interpretacion se hace en tiempo de ejecucion por el JIT Just in Time Compiler, que también optimiza el código.
 
 En la version 1.2 JVM se desarrollo HotSpot que tiene un cache de compilaciones 
 La JVM detecta los puntos calientes los cachea y los optimiza
@@ -113,7 +114,7 @@ Con el HotSpot se consigue que el rendimiento sea igual que los lenguajes compil
 
 Las aplicaciones java tiene un **warm time up** para la optimización
 
-**SERVIDORES EN HD**
+## SERVIDORES EN HD
 
 En un entorno de produccion, hay que tener la politica de HD de la empresa. Teniendo en cuenta que el servidor va a estar en cluster
 Si hay dos maquinas en un cluster si una se cae la otra debe poder asumir la carga:
@@ -123,7 +124,18 @@ Si hay dos maquinas en un cluster si una se cae la otra debe poder asumir la car
 
 Ejemplo real Sistema bancario:  4 servidores en weblogic. CPU no puede superar el 25%. App crítica pueden caer 3 servidores y el sistema seguiria funcionando.
 
-**visualvm**
+                          Tomcat 1 (App A)
+                        /
+Client -> Balanceador - 
+                        \
+                          Tomcat 2 (App 2)
+
+El balanceador es capaz de ubicar la sesion  (a partir del JSESSIONID de la cookie del cliente) indepedientemente de en que servidor se encuentres 
+
+Es conveniente tener un sistema de persistencia de sesiones (En Absys cacheo de sesiones en hazelCast)
+
+
+## visualvm
 
 permite monitorizar VM locales y remotos. Instalar plugin VisualGC
 
@@ -135,7 +147,7 @@ paramétros de la JVM
 
 Los archivos hprof se pueden importar al visualvm 
 
-Conexion Remota JMX
+**Conexion Remota JMX**
 
 service:jmx:rmi:///jndi/rmi://[HOST]:[JMXREMOTE_PORT]/jmxrmi
 
@@ -148,7 +160,7 @@ Comandos proceso java
  -Dcom.sun.management.jmxremote.rmi.port=12346
 
 
-**jmeter**
+## jmeter
 
 Herramientas para pruebas de rendimiento (performance). 
 
@@ -161,7 +173,61 @@ Para rebajar la linea base se puede optimizar el código
 ![monitorizacion Tomcat](doc/monitorizacionJVM.png)
 
 
-**Repositorio de profesor**
+## jconsole
+
+Un proceso puede entrar en deadlock si intentan acceder a un mismo recurso. Si un código tiene un sychronize puede provocar deaklock lo que constitue un cuello de botellas > Uso código thread-safe.
+
+MBeans podemos acceder a información. Jconsole es muy util para visualizacion de mbeans
+
+![jconsole](doc/jconsole.png)
+
+MBeans
+
+![mbeans_jconsole](doc/mbeans_jconsole.png)
+
+Thred Pool 
+
+![thread pool](doc/threadpool_jconsole.png)
+
+## Java mission Control jmc
+
+https://adoptopenjdk.net/jmc.html
+
+Personalizacion gráficas de métricas en funcion de Mbeans
+
+![chart jmc](doc/chartDBConnections_2_jmc.png)
+
+Flight recorder - grabacion de métrica para su posterior análisis (fichero jfr)
+
+![flight recording](doc/flight_recording_jmc.png)
+
+![flight recording](doc/jmr_jmc.png)
+
+## Plan de acción de monitorización de una app
+
+* Definir un plan de pruebas en el Jmeter
+  Existe la posbilidad de configurar un proxy para copiar las acciones de un usuario de la app
+* Cálculo línea base de la métrica en el Jmeter (un único hilo)
+  Estableciendo el mejor funcionamiento esperable  (teniendo en cuenta el warm time up)
+* Equipo desarrollo debe Intentar optimizar el código para mejorar la línea base.
+    * Herramientas calidad - SonarQube
+    * identificar partes más lentas (Jmeter)
+    * BBDD : anális conexiones. intentar bajar el número acceso o mejor las consultas (revisar plan de ejecución)
+
+* Sistemas ha de asegurarse que el rendimiento no se degrada para el volumen esperado de usuarios
+    * Pruebas de rendimiento: 150-200% de la capadidad máxima estimada 
+    * Monitorización (jmc, jconsole, visualvm) para ubicar el qué momento se degrada e identificar cuellos de botellas.
+      Los cuellos de botellas estarán principalmente en :
+        * numero de ejecutores
+        * número de conexiones a BBDD
+        * GC
+
+Hasta el límite de los recursos del harware CPU,Memoria,I/0. Para no saturar hay que escalar:
+
+* Escalamiento vertical cambiar a una maquina con más recursos
+* Escalamiento horizontal añadir servidores al cluster
+
+## Repositorio de profesor
 
 https://github.com/IvanciniGT/cursoOptimizacionJava
 
